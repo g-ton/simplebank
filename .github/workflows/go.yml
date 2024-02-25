@@ -31,7 +31,7 @@ jobs:
           
     steps:
 
-    - name: Set up Go
+    - name: Set up Go 1.xx
       uses: actions/setup-go@v2
       with:
         go-version: '1.21'
