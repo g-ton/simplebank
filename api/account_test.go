@@ -13,6 +13,7 @@ import (
 	"github.com/bxcodec/faker/v4"
 	mockdb "github.com/g-ton/simplebank/db/mock"
 	db "github.com/g-ton/simplebank/db/sqlc"
+	"github.com/g-ton/simplebank/util"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 )
@@ -512,7 +513,7 @@ func randomAccount() db.Account {
 		ID:       int64(randomIntA[0]),
 		Owner:    faker.Name(),
 		Balance:  int64(randomIntB[0]),
-		Currency: "USD",
+		Currency: util.RandomCurrency(),
 	}
 }
 

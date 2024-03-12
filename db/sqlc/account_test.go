@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/bxcodec/faker/v4"
+	"github.com/g-ton/simplebank/util"
 	"github.com/stretchr/testify/require"
 )
 
@@ -15,7 +16,7 @@ func CreateRandomAccount(t *testing.T) Account {
 	arg := CreateAccountParams{
 		Owner:    faker.Name(),
 		Balance:  int64(balanceInt[0]),
-		Currency: faker.Currency(),
+		Currency: util.RandomCurrency(),
 	}
 
 	account, err := testQueries.CreateAccount(context.Background(), arg)

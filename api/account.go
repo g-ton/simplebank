@@ -9,8 +9,9 @@ import (
 )
 
 type createAccountRequest struct {
-	Owner    string `json:"owner" binding:"required"`
-	Currency string `json:"currency" binding:"required,oneof=USD EUR"`
+	Owner string `json:"owner" binding:"required"`
+	// Adding custom validation at the end of the binding: myCurrencyValidator
+	Currency string `json:"currency" binding:"required,myCurrencyValidator"`
 }
 
 // -- CREATE
