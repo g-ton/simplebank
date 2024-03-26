@@ -6,13 +6,17 @@ import (
 	"time"
 
 	"github.com/bxcodec/faker/v4"
+	"github.com/g-ton/simplebank/util"
 	"github.com/stretchr/testify/require"
 )
 
 func CreateRandomUser(t *testing.T) User {
+	hashedPassword, err := util.HashPassword(util.RandomString(6))
+	require.NoError(t, err)
+
 	arg := CreateUserParams{
 		Username:       faker.Username(),
-		HashedPassword: "secret",
+		HashedPassword: hashedPassword,
 		FullName:       faker.Name(),
 		Email:          faker.Email(),
 	}

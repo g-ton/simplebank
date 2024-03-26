@@ -15,6 +15,7 @@ import (
 	db "github.com/g-ton/simplebank/db/sqlc"
 	"github.com/g-ton/simplebank/util"
 	"github.com/golang/mock/gomock"
+	"github.com/lib/pq"
 	"github.com/stretchr/testify/require"
 )
 
@@ -282,6 +283,36 @@ func TestCreateAccountAPI(t *testing.T) {
 				require.Equal(t, http.StatusBadRequest, recorder.Code)
 			},
 		},
+		{
+			name:    "Forbidden",
+			account: account,
+			buildStubs: func(store *mockdb.MockStore) {
+				// build stubs
+				store.EXPECT().
+					CreateAccount(gomock.Any(), gomock.Any()).
+					Times(1).
+					Return(db.Account{}, returnErr("foreign_key_violation"))
+			},
+			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
+				// check response
+				require.Equal(t, http.StatusForbidden, recorder.Code)
+			},
+		},
+		{
+			name:    "Forbidden 2",
+			account: account,
+			buildStubs: func(store *mockdb.MockStore) {
+				// build stubs
+				store.EXPECT().
+					CreateAccount(gomock.Any(), gomock.Any()).
+					Times(1).
+					Return(db.Account{}, returnErr("unique_violation"))
+			},
+			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
+				// check response
+				require.Equal(t, http.StatusForbidden, recorder.Code)
+			},
+		},
 	}
 
 	for _, tc := range testCases {
@@ -308,6 +339,14 @@ func TestCreateAccountAPI(t *testing.T) {
 			tc.checkResponse(t, recorder)
 		})
 	}
+}
+func returnErr(message string) error {
+	e := pq.Error{
+		Code:    "23503",
+		Message: message,
+	}
+
+	return &e
 }
 
 func TestUpdateAccountAPI(t *testing.T) {
